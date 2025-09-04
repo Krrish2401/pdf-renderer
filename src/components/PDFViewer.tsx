@@ -13,14 +13,21 @@ type SelectionPayload = {
 };
 
 export default function PDFViewer() {
-    async function handleSelection(payload: SelectionPayload) {
+    async function handleSelection(payload: SelectionPayload): Promise<string> {
         const extras = await fetchContextText(payload.currentPage);
         const fullPayload = { ...payload, ...extras };
-        await fetch("/api/selection", {
+        const response = await fetch("/api/selection", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(fullPayload),
         });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data.meaning;
     }
 
     return <PDFViewerClientNoSSR onSelection={handleSelection} />;
