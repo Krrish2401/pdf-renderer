@@ -41,10 +41,9 @@ export async function POST(req: NextRequest) {
 
     const raw = response.text;
     if (!raw) throw new Error("No response text from AI");
-    
+    console.log(payload);//debug log
     console.log(JSON.parse(raw));
     
-    // Don't forget to return a response to the client
     return new Response(raw, {
         headers: { 'Content-Type': 'application/json' },
     });
